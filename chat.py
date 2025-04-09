@@ -2,6 +2,10 @@ from multiprocessing import Process, Event
 from pydub import AudioSegment
 from pydub.playback import _play_with_pyaudio
 import time
+import boto3
+
+polly = boto3.client("polly")
+
 
 def play_audio_segment(audio_path, stop_event):
     audio = AudioSegment.from_file(audio_path)
@@ -15,6 +19,7 @@ def play_audio_segment(audio_path, stop_event):
             player.stop()
             break
         time.sleep(0.1)  # Check frequently
+
 
 def responder_process(user_speaking, stop_audio):
     while True:
@@ -37,6 +42,14 @@ def responder_process(user_speaking, stop_audio):
 
         time.sleep(1)
 
+
+# Convert text to speech using Amazon Polly
+def text_to_speech(text, output_filename):
+    response = polly.synthesize_speech(Text=text, OutputFormat="mp3", VoiceId="Joanna")
+    with open(output_filename, "wb") as file:
+        file.write(response["AudioStream"].read())
+
+
 def listener_process(user_speaking, stop_audio):
     while True:
         input("[Listener] Press Enter to simulate user speaking\n")
@@ -47,7 +60,8 @@ def listener_process(user_speaking, stop_audio):
         user_speaking.clear()
         print("[Listener] User stopped speaking")
 
-if __name__ == "__main__":
+
+def main():
     user_speaking = Event()
     stop_audio = Event()
 
@@ -59,3 +73,7 @@ if __name__ == "__main__":
 
     listener.join()
     responder.join()
+
+
+if __name__ == "__main__":
+    main()
