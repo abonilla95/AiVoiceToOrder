@@ -33,8 +33,8 @@ class State(TypedDict):
     messages: Annotated[list, add_messages] = [
         {
             "role": "system",
-            "content": open("./prompts/restaurant.txt", "r").read(),
-        }
+            "content": open("./prompts/restaurant_v2.txt", "r").read(),
+        } # Can prepopulate with AI/User messages if needed to provide few-shot examples
     ]
 
 
