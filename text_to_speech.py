@@ -16,7 +16,7 @@ else:
 
 
 def text_to_speech(text: str) -> str:
-        
+
     with client.audio.speech.with_streaming_response.create(
         model="gpt-4o-mini-tts",
         voice="coral",

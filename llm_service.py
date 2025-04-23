@@ -34,7 +34,7 @@ class State(TypedDict):
         {
             "role": "system",
             "content": open("./prompts/restaurant_v2.txt", "r").read(),
-        } # Can prepopulate with AI/User messages if needed to provide few-shot examples
+        }  # Can prepopulate with AI/User messages if needed to provide few-shot examples
     ]
 
 
@@ -49,6 +49,7 @@ def add_to_order(item: str) -> str:
         f.write(f"{item}\n")
     return f"Added {item} to the order."
 
+
 @tool
 def get_order() -> str:
     """Get the current order."""
@@ -56,12 +57,14 @@ def get_order() -> str:
         order = f.read()
     return f"Current order: {order}"
 
+
 @tool
 def clear_order() -> str:
     """Clear the current order."""
     with open("order.txt", "w") as f:
         f.write("")
     return "Order cleared."
+
 
 @tool
 def update_order(item: str) -> str:
@@ -71,7 +74,7 @@ def update_order(item: str) -> str:
     return f"Updated order to {item}."
 
 
-tools = [ add_to_order, get_order, clear_order, update_order ]
+tools = [add_to_order, get_order, clear_order, update_order]
 llm = llm.bind_tools(tools)
 graph_builder = StateGraph(State)
 tool_node = ToolNode(tools=tools)
@@ -88,7 +91,7 @@ def chatbot_service(user_input: str) -> str:
     response = graph.invoke({"messages": [{"role": "user", "content": user_input}]})
     if type(response["messages"][-1]) == AIMessage:
         audio_response = response["messages"][-1].additional_kwargs["audio"]["data"]
-            
+
         # Convert the audio response (base64 string) to bytes
         audio_response = base64.b64decode(audio_response)
         with open("response.mp3", "wb") as f:

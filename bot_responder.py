@@ -2,18 +2,14 @@ from multiprocessing import Process
 from pydub import AudioSegment
 from pydub.playback import _play_with_pyaudio
 from transcription_service import transcribe_audio
-# from text_to_speech_service import generate_speech
 from llm_service import chatbot_service
 import time
 import logging
-import requests
-import boto3
 
 
 def play_audio_segment(audio_path, stop_event):
     audio = AudioSegment.from_file(audio_path)
     _play_with_pyaudio(audio)
-
 
 
 def transcribe_to_response_audio_file(response_audio):
@@ -22,11 +18,15 @@ def transcribe_to_response_audio_file(response_audio):
     chatbot_service(transcription)
 
 
-def responder_process(conversation_started, conversation_ended, user_speaking, bot_responding, stop_audio):
+def responder_process(
+    conversation_started, conversation_ended, user_speaking, bot_responding, stop_audio
+):
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
     handler = logging.StreamHandler()
-    handler.setFormatter(logging.Formatter(f'%(asctime)s -responder - %(levelname)s - %(message)s'))
+    handler.setFormatter(
+        logging.Formatter(f"%(asctime)s -responder - %(levelname)s - %(message)s")
+    )
     logger.addHandler(handler)
 
     logging.info("[Responder] Process started.")
@@ -38,7 +38,7 @@ def responder_process(conversation_started, conversation_ended, user_speaking, b
             continue
         if bot_responding.is_set():
             start_time = time.time()
-            logging.info("[Responder] User is not speaking") 
+            logging.info("[Responder] User is not speaking")
             # convert user_input.wav to text using AWS Transcribe or any other method
             response_audio = ".\\response.mp3"
             transcribe_to_response_audio_file(response_audio)
@@ -56,12 +56,14 @@ def responder_process(conversation_started, conversation_ended, user_speaking, b
             #     time.sleep(0.1)
             total_time = time.time() - start_time
             total_time_seconds = int(total_time)
-            logger.info(f"[Responder] Total time taken for response: {total_time_seconds} seconds")
+            logger.info(
+                f"[Responder] Total time taken for response: {total_time_seconds} seconds"
+            )
             bot_responding.clear()
 
 
 def main():
-    
+
     response_audio = ".\\response.mp3"
     transcription = transcribe_audio("user_input.wav")
     logging.info("[Responder] Starting audio playback")
@@ -72,6 +74,6 @@ def main():
 
     _play_with_pyaudio(audio)
 
+
 if __name__ == "__main__":
     main()
-

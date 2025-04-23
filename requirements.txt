@@ -1,4 +1,3 @@
-boto3
 pyaudio
 SpeechRecognition
 noisereduce
@@ -6,3 +5,4 @@ pydub
 langchain
 langgraph
 langchain-openai
+dotenv
