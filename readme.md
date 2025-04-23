@@ -22,6 +22,7 @@ This guide explains how to create a Python 3 virtual environment and install all
 
 - Python 3 installed on your system.
 - `pip` (Python package manager) installed.
+- OpenAI api key
 
 ## Steps
 
@@ -66,9 +67,22 @@ This guide explains how to create a Python 3 virtual environment and install all
 
 6. **Deactivate the Virtual Environment**  
    When you're done, deactivate the virtual environment:
+
    ```bash
    deactivate
    ```
+
+## Set Up Environment Variables
+
+Create a `.env` file in the project directory and add the following line to specify your OpenAI API key:
+
+```env
+OPENAI_API_KEY=your_openai_api_key_here
+```
+
+Replace `your_openai_api_key_here` with your actual OpenAI API key.
+
+Ensure the `.env` file is included in your `.gitignore` file to prevent exposing sensitive information.
 
 ## Notes
 
